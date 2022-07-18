@@ -11,5 +11,5 @@ router.get('/', getUsers);
 router.get('/:userId', getUser);
 router.post('/', createUser);
 router.patch('/me', setUser);
-router.patch('/avatar', setAvatar);
+router.patch('/me/avatar', setAvatar);
 module.exports = router;
