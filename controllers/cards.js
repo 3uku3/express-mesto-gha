@@ -1,3 +1,5 @@
+const { Error } = require('mongoose');
+
 const Card = require('../models/card');
 
 module.exports.getCards = (req, res) => {
@@ -19,10 +21,19 @@ module.exports.setCard = (req, res) => {
 };
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId, { new: true })
-    .then((card) => res.send({ data: card }))
+    .then((card) => {
+      if (card) {
+        res.send({ data: card });
+      }
+      return Promise.reject(new Error.ValidationError());
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
+        res.status(400).send({ message: 'Запрашиваемая карточка не найдена' });
+        return;
+      }
+      if (err.name === 'ValidationError') {
+        res.status(404).send({ message: 'Переданы некорректные данные' });
         return;
       }
       res.status(500).send({ message: 'Ошибка сервера' });
@@ -36,14 +47,19 @@ module.exports.likeCard = (req, res) => {
     },
     { new: true },
   )
-    .then((card) => res.send({ data: card }))
+    .then((card) => {
+      if (card) {
+        res.send({ data: card });
+      }
+      return Promise.reject(new Error.ValidationError());
+    })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Запрашиваемая карточка не найдена' });
         return;
       }
-      if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
+      if (err.name === 'ValidationError') {
+        res.status(404).send({ message: 'Переданы некорректные данные' });
         return;
       }
       res.status(500).send({ message: 'Ошибка сервера' });
@@ -57,14 +73,19 @@ module.exports.unlikeCard = (req, res) => {
     },
     { new: true },
   )
-    .then((card) => res.send({ data: card }))
+    .then((card) => {
+      if (card) {
+        res.send({ data: card });
+      }
+      return Promise.reject(new Error.ValidationError());
+    })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Запрашиваемая карточка не найдена' });
         return;
       }
-      if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
+      if (err.name === 'ValidationError') {
+        res.status(404).send({ message: 'Переданы некорректные данные' });
         return;
       }
       res.status(500).send({ message: 'Ошибка сервера' });
