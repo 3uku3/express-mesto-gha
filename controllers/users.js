@@ -11,7 +11,7 @@ module.exports.getUser = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res
-          .status(404)
+          .status(400)
           .send({ message: 'Запрашиваемый пользователь не найден' });
         return;
       }
@@ -32,7 +32,7 @@ module.exports.createUser = (req, res) => {
 };
 module.exports.setUser = (req, res) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about })
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -50,7 +50,7 @@ module.exports.setUser = (req, res) => {
 };
 module.exports.setAvatar = (req, res) => {
   const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar })
+  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
