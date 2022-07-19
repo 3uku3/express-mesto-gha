@@ -12,20 +12,15 @@ module.exports.getUser = (req, res) => {
     .then((user) => {
       if (user) {
         res.send({ data: user });
+        return;
       }
-      return Promise.reject(new Error.ValidationError());
+      res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         res
           .status(400)
-          .send({ message: 'Запрашиваемый пользователь не найден' });
-        return;
-      }
-      if (err.name === 'ValidationError') {
-        res
-          .status(404)
-          .send({ message: 'Запрашиваемый пользователь не найден' });
+          .send({ message: 'Передан некорректный id пользователя' });
         return;
       }
       res.status(500).send({ message: err.name });
@@ -34,7 +29,7 @@ module.exports.getUser = (req, res) => {
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные' });
@@ -45,8 +40,18 @@ module.exports.createUser = (req, res) => {
 };
 module.exports.setUser = (req, res) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
-    .then((user) => res.send({ data: user }))
+  User.findByIdAndUpdate(
+    req.user._id,
+    { name, about },
+    { new: true, runValidators: true },
+  )
+    .then((user) => {
+      if (user) {
+        res.send({ data: user });
+        return;
+      }
+      res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные' });
@@ -54,8 +59,8 @@ module.exports.setUser = (req, res) => {
       }
       if (err.name === 'CastError') {
         res
-          .status(404)
-          .send({ message: 'Запрашиваемый пользователь не найден' });
+          .status(400)
+          .send({ message: 'Передан некорректный id пользователя' });
         return;
       }
       res.status(500).send({ message: 'Ошибка сервера' });
@@ -63,8 +68,18 @@ module.exports.setUser = (req, res) => {
 };
 module.exports.setAvatar = (req, res) => {
   const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
-    .then((user) => res.send({ data: user }))
+  User.findByIdAndUpdate(
+    req.user._id,
+    { avatar },
+    { new: true, runValidators: true },
+  )
+    .then((user) => {
+      if (user) {
+        res.send({ data: user });
+        return;
+      }
+      res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные' });
@@ -72,8 +87,8 @@ module.exports.setAvatar = (req, res) => {
       }
       if (err.name === 'CastError') {
         res
-          .status(404)
-          .send({ message: 'Запрашиваемый пользователь не найден' });
+          .status(400)
+          .send({ message: 'Передан некорректный id пользователя' });
         return;
       }
       res.status(500).send({ message: 'Ошибка сервера' });
