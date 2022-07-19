@@ -5,14 +5,15 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon app.js",
-    "start": "node app.js"
+    "start": "node app.js",
+    "lint" : "npx eslint"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/3uku3/express-mesto-gha.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Mikhail Utin",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/3uku3/express-mesto-gha/issues"
