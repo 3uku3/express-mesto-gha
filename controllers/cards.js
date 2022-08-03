@@ -4,7 +4,6 @@ const {
   CREATE_STATUS,
 } = require('../utils/status');
 const UncorrectDataError = require('../utils/uncorrect-data-error');
-const DeniedAccessError = require('../utils/denied-access-error');
 const NotFoundError = require('../utils/not-found-error');
 const ForbiddenError = require('../utils/forbidden-error');
 
