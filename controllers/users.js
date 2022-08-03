@@ -18,7 +18,6 @@ module.exports.getUser = (req, res, next) => {
     .then((user) => {
       if (user) {
         res.send({ data: user });
-        return;
       }
       throw new NotFoundError('Запрашиваемый пользователь не найден');
     })
@@ -26,7 +25,8 @@ module.exports.getUser = (req, res, next) => {
       if (err.name === 'CastError') {
         throw new UncorrectDataError('Передан некорректный id пользователя');
       }
-    }).catch(next);
+      next(err);
+    });
 };
 module.exports.getMe = (req, res, next) => {
   User.findById(req.user._id).then((user) => {
