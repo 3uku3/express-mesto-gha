@@ -1,52 +1,45 @@
 const Card = require('../models/card');
 const {
-  NOT_FOUND_STATUS,
-  UNCORRECT_DATA_STATUS,
   CREATE_STATUS,
-  SERVER_ERROR_STATUS,
 } = require('../utils/status');
+const UncorrectDataError = require('../utils/uncorrect-data-error');
+const DeniedAccessError = require('../utils/denied-access-error');
+const NotFoundError = require('../utils/not-found-error');
 
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch(() => res.status(SERVER_ERROR_STATUS).send({ message: 'Ошибка сервера' }));
+    .catch(next);
 };
-module.exports.setCard = (req, res) => {
+module.exports.setCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.status(CREATE_STATUS).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res
-          .status(UNCORRECT_DATA_STATUS)
-          .send({ message: 'Переданы некорректные данные' });
-        return;
+        throw new UncorrectDataError('Переданы некорректные данные');
       }
-      res.status(SERVER_ERROR_STATUS).send({ message: 'Ошибка сервера' });
-    });
+    }).catch(next);
 };
-module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
-    .then((card) => {
-      if (card) {
-        res.send({ data: card });
-        return;
+module.exports.deleteCard = (req, res, next) => {
+  Card.findById(req.params.cardId).then((card) => {
+    if (card) {
+      if (card.owner._id === req.user._id) {
+        Card.findByIdAndRemove(req.params.cardId)
+          .then((cardRemoved) => {
+            res.send({ data: cardRemoved });
+          });
       }
-      res
-        .status(NOT_FOUND_STATUS)
-        .send({ message: 'Запрашиваемая карточка не найдена' });
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res
-          .status(UNCORRECT_DATA_STATUS)
-          .send({ message: 'Передан некорректный id карточки' });
-        return;
-      }
-      res.status(SERVER_ERROR_STATUS).send({ message: 'Ошибка сервера' });
-    });
+      throw new DeniedAccessError('Отказано в доступе');
+    }
+    throw new NotFoundError('Запрашиваемая карточка не найдена');
+  }).catch((err) => {
+    if (err.name === 'CastError') {
+      throw new UncorrectDataError('Передан некорректный id карточки');
+    }
+  }).catch(next);
 };
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     {
@@ -59,21 +52,15 @@ module.exports.likeCard = (req, res) => {
         res.send({ data: card });
         return;
       }
-      res
-        .status(NOT_FOUND_STATUS)
-        .send({ message: 'Запрашиваемая карточка не найдена' });
+      throw new NotFoundError('Запрашиваемая карточка не найдена');
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res
-          .status(UNCORRECT_DATA_STATUS)
-          .send({ message: 'Передан некорректный id карточки' });
-        return;
+        throw new UncorrectDataError('Передан некорректный id карточки');
       }
-      res.status(SERVER_ERROR_STATUS).send({ message: 'Ошибка сервера' });
-    });
+    }).catch(next);
 };
-module.exports.unlikeCard = (req, res) => {
+module.exports.unlikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     {
@@ -86,17 +73,11 @@ module.exports.unlikeCard = (req, res) => {
         res.send({ data: card });
         return;
       }
-      res
-        .status(NOT_FOUND_STATUS)
-        .send({ message: 'Запрашиваемая карточка не найдена' });
+      throw new NotFoundError('Запрашиваемая карточка не найдена');
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res
-          .status(UNCORRECT_DATA_STATUS)
-          .send({ message: 'Передан некорректный id карточки' });
-        return;
+        throw new UncorrectDataError('Передан некорректный id карточки');
       }
-      res.status(SERVER_ERROR_STATUS).send({ message: 'Ошибка сервера' });
-    });
+    }).catch(next);
 };

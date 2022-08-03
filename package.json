@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon app.js",
     "start": "node app.js",
-    "lint" : "npx eslint ."
+    "lint": "npx eslint . --fix"
   },
   "repository": {
     "type": "git",
@@ -20,9 +20,12 @@
   },
   "homepage": "https://github.com/3uku3/express-mesto-gha#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.0",
     "express": "^4.18.1",
-    "mongoose": "^6.4.4"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.4.4",
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "eslint": "^8.20.0",

@@ -33,4 +33,3 @@ trim_trailing_whitespace = false
 insert_final_newline = true
 [*]
 quote_type = single
-"prettier.trailingComma" = "all"
