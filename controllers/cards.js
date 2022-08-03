@@ -1,4 +1,6 @@
+// const mongoose = require('mongoose');
 const Card = require('../models/card');
+const User = require('../models/user');
 const {
   CREATE_STATUS,
 } = require('../utils/status');
@@ -23,23 +25,27 @@ module.exports.setCard = (req, res, next) => {
     }).catch(next);
 };
 module.exports.deleteCard = (req, res, next) => {
-  Card.findById(req.params.cardId).then((card) => {
+  console.log('hi');
+  Card.findById(req.params.cardId).populate('owner').then((card) => {
     if (card) {
-      if (card.owner._id === req.user._id) {
+      if (card.owner._id.valueOf() === req.user._id) {
         Card.findByIdAndRemove(req.params.cardId)
           .then((cardRemoved) => {
             res.send({ data: cardRemoved });
           });
+      } else {
+        throw new DeniedAccessError('Отказано в доступе');
       }
-      throw new DeniedAccessError('Отказано в доступе');
+    } else {
+      throw new NotFoundError('Запрашиваемая карточка не найдена');
     }
-    throw new NotFoundError('Запрашиваемая карточка не найдена');
   }).catch((err) => {
     if (err.name === 'CastError') {
       throw new UncorrectDataError('Передан некорректный id карточки');
     }
     next(err);
-  }).catch(next);
+  })
+    .catch(next);
 };
 module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
