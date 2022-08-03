@@ -1,16 +1,17 @@
 const jwt = require('jsonwebtoken');
 const DeniedAccessError = require('../utils/denied-access-error');
 
-const extractBearerToken = (header) => header.replace('Bearer ', '');
+const extractJwtToken = (header) => header.replace('jwt=', '');
 
 module.exports = (req, res, next) => {
-  const { authorization } = req.headers;
+  const { cookie } = req.headers;
 
-  if (!authorization || !authorization.startsWith('Bearer ')) {
+  if (!cookie || !cookie.startsWith('jwt=')) {
     next(new DeniedAccessError('Необходима авторизация'));
   }
 
-  const token = extractBearerToken(authorization);
+  const token = extractJwtToken(cookie);
+
   let payload;
 
   try {
@@ -18,9 +19,7 @@ module.exports = (req, res, next) => {
   } catch (err) {
     next(new DeniedAccessError('Необходима авторизация'));
   }
-
   req.user = payload;
 
   next();
-  return 0;
 };

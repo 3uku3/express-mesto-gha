@@ -29,12 +29,11 @@ module.exports.getUser = (req, res, next) => {
     }).catch(next);
 };
 module.exports.getMe = (req, res, next) => {
-  User.findUserById(req.user._id).then((user) => {
+  User.findById(req.user._id).then((user) => {
     if (!user) {
       throw new NotFoundError('Запрашиваемый пользователь не найден');
     }
     res.status(200).send({ data: user });
-    return user;
   }).catch(next);
 };
 module.exports.createUser = (req, res, next) => {
@@ -44,7 +43,17 @@ module.exports.createUser = (req, res, next) => {
   bcrypt.hash(password, 10).then((hash) => User.create({
     name, about, avatar, email, password: hash,
   }))
-    .then((user) => res.status(CREATE_STATUS).send({ data: user }))
+    .then((user) => {
+      res.status(CREATE_STATUS).send({
+        data: {
+          email: user.email,
+          name: user.name,
+          about: user.about,
+          avatar: user.avatar,
+          _id: user._id,
+        },
+      });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new UncorrectDataError('Переданы некорректные данные');
@@ -64,6 +73,14 @@ module.exports.login = (req, res, next) => {
         .cookie('jwt', token, {
           maxAge: 3600000,
           httpOnly: true,
+        }).send({
+          data: {
+            email: user.email,
+            name: user.name,
+            about: user.about,
+            avatar: user.avatar,
+            _id: user._id,
+          },
         })
         .end();
     })

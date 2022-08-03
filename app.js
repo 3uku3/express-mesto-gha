@@ -22,10 +22,15 @@ app.post('/signup', celebrate({
     password: Joi.string().required(),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().required().regex(/^http(s)?:\/\/([\w.]+\/?)\S*/),
+    avatar: Joi.string().regex(/^http(s)?:\/\/([\w.]+\/?)\S*/),
   },
 }), createUser);
-app.post('/signin', login);
+app.post('/signin', celebrate({
+  body: {
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  },
+}), login);
 
 app.use('/users', auth, require('./routes/users'));
 app.use('/cards', auth, require('./routes/cards'));
