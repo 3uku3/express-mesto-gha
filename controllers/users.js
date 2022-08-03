@@ -94,10 +94,6 @@ module.exports.setUser = (req, res, next) => {
 };
 module.exports.setAvatar = (req, res, next) => {
   const { avatar } = req.body;
-  const regular = /^http(s)?:\/\/([\w.]+\/?)\S*/g;
-  if (!regular.test(avatar)) {
-    throw new UncorrectDataError('Переданы некорректные данные');
-  }
   User.findByIdAndUpdate(
     req.user._id,
     { avatar },
