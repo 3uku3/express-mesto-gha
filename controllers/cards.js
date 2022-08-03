@@ -24,7 +24,6 @@ module.exports.setCard = (req, res, next) => {
     }).catch(next);
 };
 module.exports.deleteCard = (req, res, next) => {
-  console.log('hi');
   Card.findById(req.params.cardId).populate('owner').then((card) => {
     if (card) {
       if (card.owner._id.valueOf() === req.user._id) {
