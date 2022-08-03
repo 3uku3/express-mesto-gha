@@ -19,6 +19,7 @@ module.exports.setCard = (req, res, next) => {
       if (err.name === 'ValidationError') {
         throw new UncorrectDataError('Переданы некорректные данные');
       }
+      next(err);
     }).catch(next);
 };
 module.exports.deleteCard = (req, res, next) => {
@@ -37,6 +38,7 @@ module.exports.deleteCard = (req, res, next) => {
     if (err.name === 'CastError') {
       throw new UncorrectDataError('Передан некорректный id карточки');
     }
+    next(err);
   }).catch(next);
 };
 module.exports.likeCard = (req, res, next) => {

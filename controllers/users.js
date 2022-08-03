@@ -61,6 +61,7 @@ module.exports.createUser = (req, res, next) => {
       if (err.code === 11000) {
         throw new ConflictError('Пользователь уже зарегестрирован');
       }
+      next(err);
     })
     .catch(next);
 };
@@ -107,6 +108,7 @@ module.exports.setUser = (req, res, next) => {
       if (err.name === 'CastError') {
         throw new UncorrectDataError('Передан некорректный id пользователя');
       }
+      next(err);
     }).catch(next);
 };
 module.exports.setAvatar = (req, res, next) => {
@@ -130,5 +132,6 @@ module.exports.setAvatar = (req, res, next) => {
       if (err.name === 'CastError') {
         throw new UncorrectDataError('Передан некорректный id пользователя');
       }
+      next(err);
     }).catch(next);
 };
