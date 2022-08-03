@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi } = require('celebrate');
+const { errors } = require('celebrate');
 const auth = require('./middlewares/auth');
 const { createUser, login } = require('./controllers/users');
 const error = require('./middlewares/errors');
@@ -29,6 +30,7 @@ app.use('/cards', auth, require('./routes/cards'));
 app.use('/*', (req, res, next) => {
   next(new NotFoundError('Страница не найдена'));
 });
+app.use(errors());
 app.use(error);
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
