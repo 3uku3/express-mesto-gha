@@ -58,6 +58,7 @@ module.exports.likeCard = (req, res, next) => {
       if (err.name === 'CastError') {
         throw new UncorrectDataError('Передан некорректный id карточки');
       }
+      next(err);
     }).catch(next);
 };
 module.exports.unlikeCard = (req, res, next) => {
@@ -79,5 +80,6 @@ module.exports.unlikeCard = (req, res, next) => {
       if (err.name === 'CastError') {
         throw new UncorrectDataError('Передан некорректный id карточки');
       }
+      next(err);
     }).catch(next);
 };

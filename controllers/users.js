@@ -26,7 +26,7 @@ module.exports.getUser = (req, res, next) => {
         throw new UncorrectDataError('Передан некорректный id пользователя');
       }
       next(err);
-    });
+    }).catch(next);
 };
 module.exports.getMe = (req, res, next) => {
   User.findById(req.user._id).then((user) => {
