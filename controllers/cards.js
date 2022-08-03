@@ -1,6 +1,5 @@
 // const mongoose = require('mongoose');
 const Card = require('../models/card');
-const User = require('../models/user');
 const {
   CREATE_STATUS,
 } = require('../utils/status');
