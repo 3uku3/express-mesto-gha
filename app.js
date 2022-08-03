@@ -16,13 +16,13 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {});
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post('/users/singup', celebrate({
+app.post('/users/signup', celebrate({
   body: {
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   },
 }), createUser);
-app.post('/users/singin', login);
+app.post('/users/signin', login);
 
 app.use('/users', auth, require('./routes/users'));
 app.use('/cards', auth, require('./routes/cards'));
