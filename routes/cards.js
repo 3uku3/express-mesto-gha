@@ -22,12 +22,12 @@ router.delete('/:cardId', celebrate({
 }), deleteCard);
 router.put('/:cardId/likes', celebrate({
   params: {
-    cardId: Joi.string().alphanum.length(24),
+    cardId: Joi.string().alphanum().length(24),
   },
 }), likeCard);
 router.delete('/:cardId/likes', celebrate({
   params: {
-    cardId: Joi.string().alphanum.length(24),
+    cardId: Joi.string().alphanum().length(24),
   },
 }), unlikeCard);
 module.exports = router;

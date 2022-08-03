@@ -17,13 +17,13 @@ router.get('/:userId', celebrate({
 }), getUser);
 router.patch('/me', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required.min(2).max(30),
-    about: Joi.string().required.min(2).max(30),
+    name: Joi.string().required().min(2).max(30),
+    about: Joi.string().required().min(2).max(30),
   }),
 }), setUser);
 router.patch('/me/avatar', celebrate({
   body: {
-    avatar: Joi.string().required().regex(/^http(s)?:\/\/([\w.]+\/?)\S*/g),
+    avatar: Joi.string().required().regex(/^http(s)?:\/\/([\w.]+\/?)\S*/),
   },
 }), setAvatar);
 module.exports = router;
