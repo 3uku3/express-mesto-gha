@@ -6,6 +6,7 @@ const {
 const UncorrectDataError = require('../utils/uncorrect-data-error');
 const DeniedAccessError = require('../utils/denied-access-error');
 const NotFoundError = require('../utils/not-found-error');
+const ForbiddenError = require('../utils/forbidden-error');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
@@ -32,7 +33,7 @@ module.exports.deleteCard = (req, res, next) => {
             res.send({ data: cardRemoved });
           });
       } else {
-        throw new DeniedAccessError('Отказано в доступе');
+        throw new ForbiddenError('Отказано в доступе');
       }
     } else {
       throw new NotFoundError('Запрашиваемая карточка не найдена');
