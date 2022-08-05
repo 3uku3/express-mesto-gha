@@ -12,7 +12,7 @@ router.get('/', getCards);
 router.post('/', celebrate({
   body: {
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().regex(/^http(s)?:\/\/([\w.]+\/?)\S*/),
+    link: Joi.string().required().regex(/^http(s)?:\/\/((www.)?([\w-]+\.)+\/?)\S*$/),
   },
 }), setCard);
 router.delete('/:cardId', celebrate({

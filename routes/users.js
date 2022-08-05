@@ -23,7 +23,7 @@ router.patch('/me', celebrate({
 }), setUser);
 router.patch('/me/avatar', celebrate({
   body: {
-    avatar: Joi.string().required().regex(/^http(s)?:\/\/([\w.]+\/?)\S*/),
+    avatar: Joi.string().required().regex(/^http(s)?:\/\/((www.)?([\w-]+\.)+\/?)\S*$/),
   },
 }), setAvatar);
 module.exports = router;
