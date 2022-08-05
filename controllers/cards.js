@@ -1,4 +1,3 @@
-// const mongoose = require('mongoose');
 const Card = require('../models/card');
 const {
   CREATE_STATUS,
@@ -24,7 +23,7 @@ module.exports.setCard = (req, res, next) => {
     }).catch(next);
 };
 module.exports.deleteCard = (req, res, next) => {
-  Card.findById(req.params.cardId).populate('owner').then((card) => {
+  Card.findById(req.params.cardId).then((card) => {
     if (card) {
       if (card.owner._id.valueOf() === req.user._id) {
         Card.findByIdAndRemove(req.params.cardId)

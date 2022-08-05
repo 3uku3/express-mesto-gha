@@ -18,8 +18,9 @@ module.exports.getUser = (req, res, next) => {
     .then((user) => {
       if (user) {
         res.send({ data: user });
+      } else {
+        throw new NotFoundError('Запрашиваемый пользователь не найден');
       }
-      throw new NotFoundError('Запрашиваемый пользователь не найден');
     })
     .catch((err) => {
       if (err.name === 'CastError') {
