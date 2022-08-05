@@ -41,29 +41,34 @@ module.exports.createUser = (req, res, next) => {
   const {
     email, password, name, about, avatar,
   } = req.body;
-  bcrypt.hash(password, 10).then((hash) => User.create({
-    name, about, avatar, email, password: hash,
-  }))
-    .then((user) => {
-      res.status(CREATE_STATUS).send({
-        data: {
-          email: user.email,
-          name: user.name,
-          about: user.about,
-          avatar: user.avatar,
-          _id: user._id,
-        },
-      });
-    })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        throw new UncorrectDataError('Переданы некорректные данные');
-      }
-      if (err.code === 11000) {
-        throw new ConflictError('Пользователь уже зарегестрирован');
-      }
-      next(err);
-    })
+  User.findOne({ email }).then((userFinded) => {
+    if (userFinded) {
+      throw new ConflictError('Пользователь уже зарегестрирован');
+    }
+    bcrypt.hash(password, 10).then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
+      .then((user) => {
+        res.status(CREATE_STATUS).send({
+          data: {
+            email: user.email,
+            name: user.name,
+            about: user.about,
+            avatar: user.avatar,
+            _id: user._id,
+          },
+        });
+      }).catch((err) => {
+        if (err.name === 'ValidationError') {
+          throw new UncorrectDataError('Переданы некорректные данные');
+        }
+        if (err.code === 11000) {
+          throw new ConflictError('Пользователь уже зарегестрирован');
+        }
+        next(err);
+      })
+      .catch(next);
+  })
     .catch(next);
 };
 module.exports.login = (req, res, next) => {
